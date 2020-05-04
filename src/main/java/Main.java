@@ -2,23 +2,35 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import service.TenantService;
 
 public class Main extends Application {
 
+    private TenantService tenantService;
+
     private Stage window;
     private GridPane gridPane = new GridPane();
+    private GridPane buttonGridPane = new GridPane();
 
-    private Button addTenantButton = new Button("Hinzufügen");
-    private Button editTenantButton = new Button("Bearbeiten");
-    private Button deleteTenantButton = new Button("Löschen");
+    private TableView tenantTable = new TableView();
 
-    private final static double WINDOW_WIDTH = 800;
-    private final static double WINDOW_HEIGHT = 600;
-    private final static double PREFFERED_TENANT_BUTTON_WIDTH = 400;
-    private final static double PREFFERED_TENANT_BUTTON_HEIGHT = 100;
+    private Button addTenantButton = new Button("Mieter hinzufügen");
+    private Button editTenantButton = new Button("Mieter bearbeiten");
+    private Button deleteTenantButton = new Button("Mieter löschen");
+
+    private final static double WINDOW_WIDTH = 830;
+    private final static double WINDOW_HEIGHT = 620;
+
+    private final static double TENANT_TABLE_WIDTH = 400;
+    private final static double TENANT_TABLE_HEIGHT = 600;
+
+    private final static double TENANT_BUTTON_WIDTH = 400;
+    private final static double TENANT_BUTTON_HEIGHT = 100;
 
     public static void main(String[] args) {
         launch(args);
@@ -26,26 +38,57 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        initializeTenantTable();
+        initializeTenantButtons();
+        initializeGridPaneConstraints();
+        initializeWindowAndScence(primaryStage);
+    }
+
+    private void initializeWindowAndScence(Stage primaryStage) {
+        Scene scene = new Scene(gridPane, WINDOW_WIDTH, WINDOW_HEIGHT);
+
         window = primaryStage;
         window.setTitle("Mieterverwaltung");
-
-        initializeTenantButtonWidth();
-        initializeGridPaneConstraints();
-
-
-        Scene scene = new Scene(gridPane, 800, 600);
 
         window.setScene(scene);
         window.show();
     }
 
-    private void initializeTenantButtonWidth() {
+
+    private void initializeTenantTable() {
         VBox vBox = new VBox();
-        vBox.setPrefWidth(PREFFERED_TENANT_BUTTON_WIDTH);
-        vBox.setPrefHeight(PREFFERED_TENANT_BUTTON_HEIGHT);
+        vBox.setPrefWidth(TENANT_TABLE_WIDTH);
+        vBox.setPrefHeight(TENANT_TABLE_HEIGHT);
+
+        TableColumn nameColumn = new TableColumn("Name des Mieters");
+        TableColumn addressColumn = new TableColumn("Adresse");
+
+        nameColumn.setMinWidth(vBox.getPrefWidth()/2);
+        addressColumn.setMinWidth(vBox.getPrefWidth()/2);
+
+        tenantTable.setMinWidth(vBox.getPrefWidth());
+        tenantTable.setMinHeight(vBox.getPrefHeight());
+
+        buttonGridPane.setVgap(10);
+        buttonGridPane.setHgap(10);
+
+        GridPane.setConstraints(addTenantButton, 0, 0);
+        GridPane.setConstraints(editTenantButton, 0, 1);
+        GridPane.setConstraints(deleteTenantButton, 0, 2);
+        tenantTable.getColumns().addAll(nameColumn, addressColumn);
+    }
+
+    private void initializeTenantButtons() {
+        VBox vBox = new VBox();
+        vBox.setPrefWidth(TENANT_BUTTON_WIDTH);
+        vBox.setPrefHeight(TENANT_BUTTON_HEIGHT);
 
         addTenantButton.setMinWidth(vBox.getPrefWidth());
         addTenantButton.setMinHeight(vBox.getPrefHeight());
+
+        addTenantButton.setOnAction(actionEvent -> {
+            tenantService.addTenant();
+        } );
 
         editTenantButton.setMinWidth(vBox.getPrefWidth());
         editTenantButton.setMinHeight(vBox.getPrefHeight());
@@ -53,18 +96,22 @@ public class Main extends Application {
         deleteTenantButton.setMinWidth(vBox.getPrefWidth());
         deleteTenantButton.setMinHeight(vBox.getPrefHeight());
 
+        deleteTenantButton.setOnAction(actionEvent -> {
+            tenantService.addTenant();
+        } );
+
+        buttonGridPane.getChildren().addAll(addTenantButton, editTenantButton, deleteTenantButton);
     }
 
     private void initializeGridPaneConstraints() {
         gridPane.setPadding(new Insets(10, 10, 10, 10));
-        gridPane.setVgap(8);
+        gridPane.setVgap(10);
         gridPane.setHgap(10);
 
-        GridPane.setConstraints(addTenantButton, 1, 1);
-        GridPane.setConstraints(editTenantButton, 1, 2);
-        GridPane.setConstraints(deleteTenantButton, 1, 3);
+        GridPane.setConstraints(tenantTable, 0, 0);
+        GridPane.setConstraints(buttonGridPane, 1, 0);
 
-        gridPane.getChildren().addAll(addTenantButton, editTenantButton, deleteTenantButton);
+        gridPane.getChildren().addAll(tenantTable, buttonGridPane);
     }
 
 }
