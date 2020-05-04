@@ -18,6 +18,12 @@ public class TenantService {
     private List<Tenant> tenantList;
     private static final String TENANT_FILE_PATH = "/resources/tenants.json";
 
+    public TenantService() { }
+
+    public TenantService(List<Tenant> tenantList) {
+        this.tenantList = tenantList;
+    }
+
     public void readTenantsFromJSON() {
         JSONParser jsonParser = new JSONParser();
 
@@ -44,16 +50,18 @@ public class TenantService {
 
     }
 
-    public void addTenant(Tenant newTenant) {
+    public List<Tenant> addTenantToList(Tenant newTenant) {
         tenantList.add(newTenant);
+        return tenantList;
     }
 
-    public void deleteTenant() {
-
+    public List<Tenant> deleteTenantFromList(Tenant tenantToBeRemoved) {
+        tenantList.remove(tenantToBeRemoved);
+        return tenantList;
     }
 
     private Tenant parseTenantObject(JSONObject tenant)
     {
-        return new Tenant(tenant.get("name").toString(), tenant.get("address").toString());
+        return new Tenant(Integer.parseInt(tenant.get("id").toString()), tenant.get("name").toString(), tenant.get("address").toString());
     }
 }

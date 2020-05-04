@@ -87,7 +87,7 @@ public class Main extends Application {
         addTenantButton.setMinHeight(vBox.getPrefHeight());
 
         addTenantButton.setOnAction(actionEvent -> {
-//            tenantService.addTenant();
+//            tenantService.addTenantToList();
         } );
 
         editTenantButton.setMinWidth(vBox.getPrefWidth());
@@ -97,7 +97,7 @@ public class Main extends Application {
         deleteTenantButton.setMinHeight(vBox.getPrefHeight());
 
         deleteTenantButton.setOnAction(actionEvent -> {
-//            tenantService.addTenant();
+//           tenantService.addTenantToList();
         } );
 
         buttonGridPane.getChildren().addAll(addTenantButton, editTenantButton, deleteTenantButton);
