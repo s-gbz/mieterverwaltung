@@ -193,7 +193,9 @@ public class Main extends Application {
         int selectedRowIndex = tenantTable.getSelectionModel().getFocusedIndex();
 
         if (selectedRowIndex != -1) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Möchten Sie diesen Mieter wirklich löschen", ButtonType.YES, ButtonType.NO);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION
+                    , "Möchten Sie den Vertrag " + tenantData.get(selectedRowIndex).getId() + " wirklich löschen?"
+                    , ButtonType.YES, ButtonType.NO);
 
             ButtonType result = alert.showAndWait().orElse(ButtonType.NO);
 
