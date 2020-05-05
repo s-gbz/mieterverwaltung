@@ -15,8 +15,8 @@ public enum GuiConstants {
 
     public final static String APPLICATION_TITLE = "Mieterverwaltung";
 
-    public final static String ADD_TENANT_BUTTON_LABEL = "Mieter hinzufügen";
-    public final static String DELET_TENANT_BUTTON_LABEL = "Mieter löschen";
+    public final static String ADD_TENANT_BUTTON_LABEL = "Mieter hinzuf\u00fcgen";
+    public final static String DELET_TENANT_BUTTON_LABEL = "Mieter l\u00f6schen";
 
     public final static String LOAD_FROM_JSON_BUTTON_LABEL = "Daten laden";
     public final static String WRITE_FROM_JSON_BUTTON_LABEL = "Daten speichern";
