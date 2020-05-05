@@ -1,3 +1,4 @@
+import gui.GuiConstants;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static gui.GuiConstants.*;
+
 public class Main extends Application {
 
     private TenantService tenantService = new TenantService();
@@ -29,25 +32,9 @@ public class Main extends Application {
     private TableView tenantTable = new TableView();
     ObservableList<Tenant> tenantData = FXCollections.observableList(new ArrayList<>());
 
-    private Button addTenantButton = new Button("Mieter hinzufügen");
+    private Button addTenantButton = new Button(ADD_TENANT_BUTTON_LABEL);
     private Button editTenantButton = new Button("Mieter bearbeiten");
-    private Button deleteTenantButton = new Button("Mieter löschen");
-
-    private final static double WINDOW_WIDTH = 1030;
-    private final static double WINDOW_HEIGHT = 620;
-
-    private final static double WINDOW_WIDTH_MARGIN_OFFSET = 30;
-    private final static double WINDOW_HEIGHT_MARGIN_OFFSET = 20;
-
-    private final static double TENANT_TABLE_WIDTH = (WINDOW_WIDTH - WINDOW_WIDTH_MARGIN_OFFSET) * 0.75;
-    private final static double TENANT_TABLE_HEIGHT = (WINDOW_HEIGHT - WINDOW_HEIGHT_MARGIN_OFFSET);
-
-    private final static double TENANT_BUTTON_WIDTH = (WINDOW_WIDTH - WINDOW_WIDTH_MARGIN_OFFSET) * 0.25;
-    private final static double TENANT_BUTTON_HEIGHT = TENANT_BUTTON_WIDTH * 0.25;
-
-    private final static String TENANT_ID_LABEL = "Vertragsnummer";
-    private final static String TENANT_NAME_LABEL = "Name des Mieters";
-    private final static String TENANT_ADDRESS_LABEL = "Adresse";
+    private Button deleteTenantButton = new Button(DELET_TENANT_BUTTON_LABEL);
 
     public static void main(String[] args) {
         launch(args);
@@ -62,20 +49,19 @@ public class Main extends Application {
     }
 
     private void initializeWindowAndScence(Stage primaryStage) {
-        Scene scene = new Scene(gridPane, WINDOW_WIDTH, WINDOW_HEIGHT);
+        Scene scene = new Scene(gridPane, GuiConstants.WINDOW_WIDTH, GuiConstants.WINDOW_HEIGHT);
 
         window = primaryStage;
-        window.setTitle("Mieterverwaltung");
+        window.setTitle(APPLICATION_TITLE);
 
         window.setScene(scene);
         window.setResizable(false);
         window.show();
     }
 
-
     private void initializeTenantTable() {
-        tenantTable.setMinWidth(TENANT_TABLE_WIDTH);
-        tenantTable.setMinHeight(TENANT_TABLE_HEIGHT);
+        tenantTable.setMinWidth(GuiConstants.TENANT_TABLE_WIDTH);
+        tenantTable.setMinHeight(GuiConstants.TENANT_TABLE_HEIGHT);
 
         initializeTenantTableColumns();
 
@@ -85,12 +71,12 @@ public class Main extends Application {
 
     private void initializeTenantTableColumns() {
         VBox vBox = new VBox();
-        vBox.setPrefWidth(TENANT_TABLE_WIDTH);
-        vBox.setPrefHeight(TENANT_TABLE_HEIGHT);
+        vBox.setPrefWidth(GuiConstants.TENANT_TABLE_WIDTH);
+        vBox.setPrefHeight(GuiConstants.TENANT_TABLE_HEIGHT);
 
-        TableColumn<Tenant, Integer>  idColumn = new TableColumn(TENANT_ID_LABEL);
-        TableColumn<Tenant, String>  nameColumn = new TableColumn(TENANT_NAME_LABEL);
-        TableColumn<Tenant, String>  addressColumn = new TableColumn(TENANT_ADDRESS_LABEL);
+        TableColumn<Tenant, Integer>  idColumn = new TableColumn(GuiConstants.TENANT_ID_LABEL);
+        TableColumn<Tenant, String>  nameColumn = new TableColumn(GuiConstants.TENANT_NAME_LABEL);
+        TableColumn<Tenant, String>  addressColumn = new TableColumn(GuiConstants.TENANT_ADDRESS_LABEL);
 
         idColumn.setMinWidth(vBox.getPrefWidth() * 0.2);
         nameColumn.setMinWidth(vBox.getPrefWidth() * 0.4);
@@ -117,8 +103,8 @@ public class Main extends Application {
 
     private void initializeTenantButtons() {
         VBox vBox = new VBox();
-        vBox.setPrefWidth(TENANT_BUTTON_WIDTH);
-        vBox.setPrefHeight(TENANT_BUTTON_HEIGHT);
+        vBox.setPrefWidth(GuiConstants.TENANT_BUTTON_WIDTH);
+        vBox.setPrefHeight(GuiConstants.TENANT_BUTTON_HEIGHT);
 
         addTenantButton.setMinWidth(vBox.getPrefWidth());
         addTenantButton.setMinHeight(vBox.getPrefHeight());
@@ -148,7 +134,7 @@ public class Main extends Application {
 
     private void openAddTenantDialogAndAddTenantOnConfirmation() {
         Dialog<Pair<String, String>> dialog = new Dialog<>();
-        dialog.setTitle("Mieter hinzufügen");
+        dialog.setTitle(ADD_TENANT_BUTTON_LABEL);
 
         ButtonType loginButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
@@ -159,13 +145,13 @@ public class Main extends Application {
         gridPane.setPadding(new Insets(20, 150, 10, 10));
 
         TextField tenantNameField = new TextField();
-        tenantNameField.setPromptText(TENANT_NAME_LABEL);
+        tenantNameField.setPromptText(GuiConstants.TENANT_NAME_LABEL);
         TextField tenantAddressField = new TextField();
-        tenantAddressField.setPromptText(TENANT_ADDRESS_LABEL);
+        tenantAddressField.setPromptText(GuiConstants.TENANT_ADDRESS_LABEL);
 
-        gridPane.add(new Label(TENANT_NAME_LABEL), 0, 0);
+        gridPane.add(new Label(GuiConstants.TENANT_NAME_LABEL), 0, 0);
         gridPane.add(tenantNameField, 0, 1);
-        gridPane.add(new Label(TENANT_ADDRESS_LABEL), 0, 2);
+        gridPane.add(new Label(GuiConstants.TENANT_ADDRESS_LABEL), 0, 2);
         gridPane.add(tenantAddressField, 0, 3);
 
         dialog.getDialogPane().setContent(gridPane);
