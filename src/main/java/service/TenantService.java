@@ -74,6 +74,12 @@ public class TenantService {
         return tenantList;
     }
 
+    public List<Tenant> deleteTenantFromList(int index) {
+
+        tenantList.remove(index);
+        return tenantList;
+    }
+
     private void addTenantIdIfItIsEmpty(Tenant newTenant) {
         if(newTenant.getId() == -1) {
             int newId = createFirstIdIfListIsEmptyOrElseReturnLastId() + 1;

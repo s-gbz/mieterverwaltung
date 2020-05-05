@@ -89,8 +89,7 @@ public class Main extends Application {
         tenantTable.setMinHeight(GuiConstants.TENANT_TABLE_HEIGHT);
 
         initializeTenantTableColumns();
-
-        tenantData.add(new Tenant(0, "asd", "asd"));
+        
         tenantTable.setItems(tenantData);
     }
 
@@ -157,7 +156,7 @@ public class Main extends Application {
         });
 
         deleteTenantButton.setOnAction(actionEvent -> {
-            openDeleteTenantDialogIfRowSelectedAndRemoveTenantOnConfirmation(tenantTable, tenantData);
+            openDeleteTenantDialogIfRowSelectedAndRemoveTenantOnConfirmation(tenantTable, tenantData, tenantService);
         });
 
         loadFromJsonButton.setOnAction(actionEvent -> {
@@ -174,7 +173,7 @@ public class Main extends Application {
         });
 
         writeToJsonButton.setOnAction(actionEvent -> {
-            openDeleteTenantDialogIfRowSelectedAndRemoveTenantOnConfirmation(tenantTable, tenantData);
+            tenantService.writeTenantsToJSON();
         });
     }
 }

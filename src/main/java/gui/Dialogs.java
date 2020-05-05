@@ -16,7 +16,7 @@ import static gui.GuiConstants.ADD_TENANT_BUTTON_LABEL;
 
 public class Dialogs {
 
-    public static void openDeleteTenantDialogIfRowSelectedAndRemoveTenantOnConfirmation(TableView tenantTable, ObservableList<Tenant> tenantData) {
+    public static void openDeleteTenantDialogIfRowSelectedAndRemoveTenantOnConfirmation(TableView tenantTable, ObservableList<Tenant> tenantData, TenantService tenantService) {
         int selectedRowIndex = tenantTable.getSelectionModel().getFocusedIndex();
 
         if (selectedRowIndex != -1) {
@@ -27,6 +27,7 @@ public class Dialogs {
             ButtonType result = alert.showAndWait().orElse(ButtonType.NO);
 
             if (ButtonType.YES.equals(result)) {
+                tenantService.deleteTenantFromList(selectedRowIndex);
                 tenantData.remove(selectedRowIndex);
             }
         }
