@@ -14,8 +14,8 @@ class TenantServiceTest {
 
     private TenantService tenantService;
 
-    private static final String READ_TENANT_TEST_FILE_PATH = "src\\test\\resources\\tenant-test-with-2-entries.json";
-    private static final String WRITE_TENANT_TEST_FILE_PATH = "src\\test\\resources\\tenant-test-to-be-written.json";
+    private static final String READ_TENANT_TEST_FILE_PATH = "src/test/resources/tenant-test-with-2-entries.json";
+    private static final String WRITE_TENANT_TEST_FILE_PATH = "src/test/resources/tenant-test-to-be-written.json";
 
     @Test
     void addTenantToListShouldIncreaseListSize() {
