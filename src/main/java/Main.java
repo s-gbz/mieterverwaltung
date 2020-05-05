@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -9,11 +10,13 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Callback;
+import javafx.util.Pair;
 import model.Tenant;
 import service.TenantService;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class Main extends Application {
 
@@ -41,6 +44,10 @@ public class Main extends Application {
 
     private final static double TENANT_BUTTON_WIDTH = (WINDOW_WIDTH - WINDOW_WIDTH_MARGIN_OFFSET) * 0.25;
     private final static double TENANT_BUTTON_HEIGHT = TENANT_BUTTON_WIDTH * 0.25;
+
+    private final static String TENANT_ID_LABEL = "Vertragsnummer";
+    private final static String TENANT_NAME_LABEL = "Name des Mieters";
+    private final static String TENANT_ADDRESS_LABEL = "Adresse";
 
     public static void main(String[] args) {
         launch(args);
@@ -81,9 +88,9 @@ public class Main extends Application {
         vBox.setPrefWidth(TENANT_TABLE_WIDTH);
         vBox.setPrefHeight(TENANT_TABLE_HEIGHT);
 
-        TableColumn<Tenant, Integer>  idColumn = new TableColumn("Vertragsnummer");
-        TableColumn<Tenant, String>  nameColumn = new TableColumn("Name des Mieters");
-        TableColumn<Tenant, String>  addressColumn = new TableColumn("Adresse");
+        TableColumn<Tenant, Integer>  idColumn = new TableColumn(TENANT_ID_LABEL);
+        TableColumn<Tenant, String>  nameColumn = new TableColumn(TENANT_NAME_LABEL);
+        TableColumn<Tenant, String>  addressColumn = new TableColumn(TENANT_ADDRESS_LABEL);
 
         idColumn.setMinWidth(vBox.getPrefWidth() * 0.2);
         nameColumn.setMinWidth(vBox.getPrefWidth() * 0.4);
@@ -117,7 +124,7 @@ public class Main extends Application {
         addTenantButton.setMinHeight(vBox.getPrefHeight());
 
         addTenantButton.setOnAction(actionEvent -> {
-//            tenantService.addTenantToList();
+            openAddTenantDialogAndAddTenantOnConfirmation();
         } );
 
         editTenantButton.setMinWidth(vBox.getPrefWidth());
@@ -127,8 +134,8 @@ public class Main extends Application {
         deleteTenantButton.setMinHeight(vBox.getPrefHeight());
 
         deleteTenantButton.setOnAction(actionEvent -> {
-            openDeleteDialogIfRowSelectedAndRemoveTenantOnConfirmation();
-        } );
+            openDeleteTenantDialogIfRowSelectedAndRemoveTenantOnConfirmation();
+        });
 
         GridPane.setConstraints(addTenantButton, 0, 0);
         GridPane.setConstraints(editTenantButton, 0, 1);
@@ -136,10 +143,53 @@ public class Main extends Application {
 
         buttonGridPane.setVgap(10);
         buttonGridPane.setHgap(10);
-        buttonGridPane.getChildren().addAll(addTenantButton, editTenantButton, deleteTenantButton);
+        buttonGridPane.getChildren().addAll(addTenantButton, deleteTenantButton);
     }
 
-    private void openDeleteDialogIfRowSelectedAndRemoveTenantOnConfirmation() {
+    private void openAddTenantDialogAndAddTenantOnConfirmation() {
+        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        dialog.setTitle("Mieter hinzufügen");
+
+        ButtonType loginButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+        gridPane.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField tenantNameField = new TextField();
+        tenantNameField.setPromptText(TENANT_NAME_LABEL);
+        TextField tenantAddressField = new TextField();
+        tenantAddressField.setPromptText(TENANT_ADDRESS_LABEL);
+
+        gridPane.add(new Label(TENANT_NAME_LABEL), 0, 0);
+        gridPane.add(tenantNameField, 0, 1);
+        gridPane.add(new Label(TENANT_ADDRESS_LABEL), 0, 2);
+        gridPane.add(tenantAddressField, 0, 3);
+
+        dialog.getDialogPane().setContent(gridPane);
+
+        // Request focus on the name field by default.
+        Platform.runLater(() -> tenantNameField.requestFocus());
+
+        // Convert the result to a username-password-pair when the login button is clicked.
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == loginButtonType) {
+                return new Pair<>(tenantNameField.getText(), tenantAddressField.getText());
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> result = dialog.showAndWait();
+
+        result.ifPresent(pair -> {
+            List<Tenant> updatedTenantList = tenantService.addTenantToList(new Tenant(pair.getKey(), pair.getValue()));
+            tenantData.add(updatedTenantList.get(updatedTenantList.size()-1));
+        });
+    }
+
+    private void openDeleteTenantDialogIfRowSelectedAndRemoveTenantOnConfirmation() {
         int selectedRowIndex = tenantTable.getSelectionModel().getFocusedIndex();
 
         if (selectedRowIndex != -1) {

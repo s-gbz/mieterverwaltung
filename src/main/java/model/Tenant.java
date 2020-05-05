@@ -6,6 +6,12 @@ public class Tenant {
     private String name;
     private String address;
 
+    public Tenant(String name, String address) {
+        this.id = -1;
+        this.name = name;
+        this.address = address;
+    }
+
     public Tenant(int id, String name, String address) {
         this.id = id;
         this.name = name;
