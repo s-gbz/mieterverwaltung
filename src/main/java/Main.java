@@ -161,7 +161,12 @@ public class Main extends Application {
         });
 
         writeToJsonButton.setOnAction(actionEvent -> {
-            tenantService.writeTenantsToJSON();
+            try {
+                String absolutePathOfSavedFile = tenantService.writeTenantsToJSON(TENANT_FILE_PATH);
+                showConfirmationAlert("Datei erfolgreich gespeichert! \nSpeicherort: " + absolutePathOfSavedFile);
+            } catch (IOException e) {
+                showConfirmationAlert("Fehler beim Speichern der Datei!");
+            }
         });
     }
 }

@@ -27,9 +27,26 @@ public class TenantService {
         this.tenantList = tenantList;
     }
 
+    public List<Tenant> addTenantToList(Tenant newTenant) {
+        addTenantIdIfItIsEmpty(newTenant);
+
+        tenantList.add(newTenant);
+        return tenantList;
+    }
+
+    public List<Tenant> deleteTenantFromList(Tenant tenantToBeRemoved) {
+        tenantList.remove(tenantToBeRemoved);
+        return tenantList;
+    }
+
+    public List<Tenant> deleteTenantFromList(int index) {
+        tenantList.remove(index);
+        return tenantList;
+    }
+
     public List<Tenant> readTenantsFromJSON(File file) {
         JSONParser jsonParser = new JSONParser();
-        System.out.println(file.getPath());
+
         try (FileReader reader = new FileReader(file.getPath()))
         {
             Object obj = jsonParser.parse(reader);
@@ -56,9 +73,10 @@ public class TenantService {
         return null;
     }
 
-    public void writeTenantsToJSON() {
+    public String writeTenantsToJSON(String tenantFilePath) throws IOException {
         JSONArray tenantJsonList = convertTenantListToJsonArray();
-        writeJsonListToFile(tenantJsonList);
+
+        return writeJsonListToFile(tenantJsonList, tenantFilePath);
     }
 
     private JSONArray convertTenantListToJsonArray() {
@@ -76,20 +94,20 @@ public class TenantService {
         return tenantJsonList;
     }
 
-    private void writeJsonListToFile(JSONArray tenantJsonList) {
-        String absolutePath = createEmptyTenantFileIfNonExists();
+    private String writeJsonListToFile(JSONArray tenantJsonList, String tenantFilePath) {
+        String absolutePath = createEmptyTenantFileIfNonExists(tenantFilePath);
 
-        try(FileWriter fileWriter = new FileWriter(TENANT_FILE_PATH)) {
+        try(FileWriter fileWriter = new FileWriter(tenantFilePath)) {
             fileWriter.write(tenantJsonList.toJSONString());
-            showConfirmationAlert("Datei erfolgreich gespeichert! \nSpeicherort: " + absolutePath);
         } catch (IOException e) {
             e.printStackTrace();
-            showConfirmationAlert("Fehler beim Speichern der Datei!");
         }
+
+        return absolutePath;
     }
 
-    private String createEmptyTenantFileIfNonExists() {
-        File tenantFile = new File(TENANT_FILE_PATH);
+    private String createEmptyTenantFileIfNonExists(String tenantFilePath) {
+        File tenantFile = new File(tenantFilePath);
 
         try {
             tenantFile.createNewFile();
@@ -98,25 +116,6 @@ public class TenantService {
         }
 
         return tenantFile.getAbsolutePath();
-    }
-
-    public List<Tenant> addTenantToList(Tenant newTenant) {
-        addTenantIdIfItIsEmpty(newTenant);
-
-        tenantList.add(newTenant);
-        return tenantList;
-    }
-
-    public List<Tenant> deleteTenantFromList(Tenant tenantToBeRemoved) {
-
-        tenantList.remove(tenantToBeRemoved);
-        return tenantList;
-    }
-
-    public List<Tenant> deleteTenantFromList(int index) {
-
-        tenantList.remove(index);
-        return tenantList;
     }
 
     private void addTenantIdIfItIsEmpty(Tenant newTenant) {
