@@ -3,10 +3,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.GridPane;
@@ -130,11 +127,7 @@ public class Main extends Application {
         deleteTenantButton.setMinHeight(vBox.getPrefHeight());
 
         deleteTenantButton.setOnAction(actionEvent -> {
-            int selectedRowIndex = tenantTable.getSelectionModel().getFocusedIndex();
-
-            if (selectedRowIndex != -1) {
-                tenantData.remove(selectedRowIndex);
-            }
+            openDeleteDialogIfRowSelectedAndRemoveTenantOnConfirmation();
         } );
 
         GridPane.setConstraints(addTenantButton, 0, 0);
@@ -144,6 +137,20 @@ public class Main extends Application {
         buttonGridPane.setVgap(10);
         buttonGridPane.setHgap(10);
         buttonGridPane.getChildren().addAll(addTenantButton, editTenantButton, deleteTenantButton);
+    }
+
+    private void openDeleteDialogIfRowSelectedAndRemoveTenantOnConfirmation() {
+        int selectedRowIndex = tenantTable.getSelectionModel().getFocusedIndex();
+
+        if (selectedRowIndex != -1) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Möchten Sie diesen Mieter wirklich löschen", ButtonType.YES, ButtonType.NO);
+
+            ButtonType result = alert.showAndWait().orElse(ButtonType.NO);
+
+            if (ButtonType.YES.equals(result)) {
+                tenantData.remove(selectedRowIndex);
+            }
+        }
     }
 
     private void initializeGridPaneConstraints() {
