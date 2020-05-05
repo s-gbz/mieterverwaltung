@@ -164,7 +164,12 @@ public class Main extends Application {
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Datei", "*.json"));
             File file = fileChooser.showOpenDialog(window);
             if (file != null) {
-                tenantService.readTenantsFromJSON(file);
+                List<Tenant> parsedTenants = tenantService.readTenantsFromJSON(file);
+
+                if(parsedTenants != null) {
+                  this.tenantData.removeAll();
+                  this.tenantData = FXCollections.observableList(parsedTenants);
+                }
             }
         });
 

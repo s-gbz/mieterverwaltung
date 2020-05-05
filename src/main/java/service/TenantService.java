@@ -28,19 +28,25 @@ public class TenantService {
         this.tenantList = tenantList;
     }
 
-    public void readTenantsFromJSON(File file) {
+    public List<Tenant> readTenantsFromJSON(File file) {
         JSONParser jsonParser = new JSONParser();
         System.out.println(file.getPath());
         try (FileReader reader = new FileReader(file.getPath()))
         {
             Object obj = jsonParser.parse(reader);
 
-            JSONArray employeeList = (JSONArray) obj;
+            JSONArray tenantList = (JSONArray) obj;
 
-            System.out.println(employeeList);
+            System.out.println(tenantList);
 
-            employeeList.forEach( emp -> parseTenantObject( (JSONObject) emp ) );
+            List<Tenant> parsedTenants = new ArrayList<>();
 
+            tenantList.forEach(tenant -> {
+                parsedTenants.add(parseTenantObject((JSONObject) tenant));
+            });
+
+            this.tenantList = parsedTenants;
+            return parsedTenants;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -48,6 +54,7 @@ public class TenantService {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     public void writeTenantsToJSON() {
