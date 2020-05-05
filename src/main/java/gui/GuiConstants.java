@@ -24,4 +24,8 @@ public enum GuiConstants {
     public final static String TENANT_ID_LABEL = "Vertragsnummer";
     public final static String TENANT_NAME_LABEL = "Name des Mieters";
     public final static String TENANT_ADDRESS_LABEL = "Adresse des Mieters";
+
+    public static final String TENANT_FILE_PATH = "src\\main\\resources\\tenants.json";
+    public static final String TENANT_FILE_DIRECTORY = "src\\main\\resources";
+
 }

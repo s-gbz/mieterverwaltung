@@ -24,8 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static gui.Dialogs.openAddTenantDialogAndAddTenantOnConfirmation;
-import static gui.Dialogs.openDeleteTenantDialogIfRowSelectedAndRemoveTenantOnConfirmation;
+import static gui.Dialogs.*;
 import static gui.GuiConstants.*;
 
 public class Main extends Application {
@@ -43,8 +42,6 @@ public class Main extends Application {
     private Button deleteTenantButton = new Button(DELET_TENANT_BUTTON_LABEL);
     private Button loadFromJsonButton = new Button(LOAD_FROM_JSON_BUTTON_LABEL);
     private Button writeToJsonButton = new Button(WRITE_FROM_JSON_BUTTON_LABEL);
-
-    private FileChooser fileChooser = new FileChooser();
 
 
     public static void main(String[] args) {
@@ -89,7 +86,7 @@ public class Main extends Application {
         tenantTable.setMinHeight(GuiConstants.TENANT_TABLE_HEIGHT);
 
         initializeTenantTableColumns();
-        
+
         tenantTable.setItems(tenantData);
     }
 
@@ -160,16 +157,7 @@ public class Main extends Application {
         });
 
         loadFromJsonButton.setOnAction(actionEvent -> {
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Datei", "*.json"));
-            File file = fileChooser.showOpenDialog(window);
-            if (file != null) {
-                List<Tenant> parsedTenants = tenantService.readTenantsFromJSON(file);
-
-                if(parsedTenants != null) {
-                  this.tenantData.removeAll();
-                  this.tenantData = FXCollections.observableList(parsedTenants);
-                }
-            }
+            openLoadJsonDialog(window, tenantService, tenantTable, tenantData);
         });
 
         writeToJsonButton.setOnAction(actionEvent -> {

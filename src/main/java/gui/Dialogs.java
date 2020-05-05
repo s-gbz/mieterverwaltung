@@ -1,18 +1,22 @@
 package gui;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Pair;
 import model.Tenant;
 import service.TenantService;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
-import static gui.GuiConstants.ADD_TENANT_BUTTON_LABEL;
+import static gui.GuiConstants.*;
 
 public class Dialogs {
 
@@ -75,5 +79,28 @@ public class Dialogs {
         });
     }
 
+    public static void openLoadJsonDialog(Stage window, TenantService tenantService, TableView tenantTable, ObservableList<Tenant> tenantData) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File(TENANT_FILE_DIRECTORY));
 
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Datei", "*.json"));
+        File file = fileChooser.showOpenDialog(window);
+        if (file != null) {
+            List<Tenant> parsedTenants = tenantService.readTenantsFromJSON(file);
+
+            if(parsedTenants != null) {
+                tenantTable.getItems().clear();
+                tenantTable.getItems().addAll(parsedTenants);
+                tenantTable.refresh();
+                showConfirmationAlert("Datei erfolgreich geöffnet!");
+            }
+        }
+    }
+
+    public static void showConfirmationAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION
+                , message
+                , ButtonType.OK);
+        alert.showAndWait();
+    }
 }

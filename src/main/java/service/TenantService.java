@@ -3,10 +3,7 @@ package service;
 
 import model.Tenant;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,10 +12,12 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import static gui.Dialogs.showConfirmationAlert;
+import static gui.GuiConstants.TENANT_FILE_PATH;
+
 public class TenantService {
 
     private List<Tenant> tenantList;
-    private static final String TENANT_FILE_PATH = "/resources/tenants.json";
 
     public TenantService() {
         this.tenantList = new ArrayList<>();
@@ -58,7 +57,47 @@ public class TenantService {
     }
 
     public void writeTenantsToJSON() {
+        JSONArray tenantJsonList = convertTenantListToJsonArray();
+        writeJsonListToFile(tenantJsonList);
+    }
 
+    private JSONArray convertTenantListToJsonArray() {
+        JSONArray tenantJsonList = new JSONArray();
+
+        for(Tenant tenant: tenantList) {
+            JSONObject tenantObject = new JSONObject();
+            tenantObject.put("id", tenant.getId());
+            tenantObject.put("name", tenant.getName());
+            tenantObject.put("address", tenant.getAddress());
+
+            tenantJsonList.add(tenantObject);
+        }
+
+        return tenantJsonList;
+    }
+
+    private void writeJsonListToFile(JSONArray tenantJsonList) {
+        String absolutePath = createEmptyTenantFileIfNonExists();
+
+        try(FileWriter fileWriter = new FileWriter(TENANT_FILE_PATH)) {
+            fileWriter.write(tenantJsonList.toJSONString());
+            showConfirmationAlert("Datei erfolgreich gespeichert! \nSpeicherort: " + absolutePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showConfirmationAlert("Fehler beim Speichern der Datei!");
+        }
+    }
+
+    private String createEmptyTenantFileIfNonExists() {
+        File tenantFile = new File(TENANT_FILE_PATH);
+
+        try {
+            tenantFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return tenantFile.getAbsolutePath();
     }
 
     public List<Tenant> addTenantToList(Tenant newTenant) {
