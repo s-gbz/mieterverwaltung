@@ -3,6 +3,7 @@ package service;
 
 import model.Tenant;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -27,10 +28,10 @@ public class TenantService {
         this.tenantList = tenantList;
     }
 
-    public void readTenantsFromJSON() {
+    public void readTenantsFromJSON(File file) {
         JSONParser jsonParser = new JSONParser();
-
-        try (FileReader reader = new FileReader(TENANT_FILE_PATH))
+        System.out.println(file.getPath());
+        try (FileReader reader = new FileReader(file.getPath()))
         {
             Object obj = jsonParser.parse(reader);
 

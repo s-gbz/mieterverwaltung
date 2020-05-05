@@ -6,15 +6,20 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import model.Tenant;
 import service.TenantService;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +43,8 @@ public class Main extends Application {
     private Button deleteTenantButton = new Button(DELET_TENANT_BUTTON_LABEL);
     private Button loadFromJsonButton = new Button(LOAD_FROM_JSON_BUTTON_LABEL);
     private Button writeToJsonButton = new Button(WRITE_FROM_JSON_BUTTON_LABEL);
+
+    private FileChooser fileChooser = new FileChooser();
 
 
     public static void main(String[] args) {
@@ -154,7 +161,11 @@ public class Main extends Application {
         });
 
         loadFromJsonButton.setOnAction(actionEvent -> {
-            openAddTenantDialogAndAddTenantOnConfirmation(tenantService, tenantData);
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Datei", "*.json"));
+            File file = fileChooser.showOpenDialog(window);
+            if (file != null) {
+                tenantService.readTenantsFromJSON(file);
+            }
         });
 
         writeToJsonButton.setOnAction(actionEvent -> {
