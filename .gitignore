@@ -31,3 +31,4 @@ dependency-reduced-pom.xml
 
 README.html
 src/main/resources/tenants.json
+*.tar
